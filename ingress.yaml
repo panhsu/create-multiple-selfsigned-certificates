@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-app
+annotations:
+  nginx.ingress.kubernetes.io/ssl-redirect: "true"
+
+  # 啟用 client cert 驗證
+  nginx.ingress.kubernetes.io/auth-tls-secret: "default/server-ca"
+  nginx.ingress.kubernetes.io/auth-tls-verify-client: "on"
+  nginx.ingress.kubernetes.io/auth-tls-verify-depth: "2"
+
+spec:
+  tls:
+  - hosts:
+    - myapp.internal.local
+    secretName: server-tls
+  rules:
+  - host: myapp.internal.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: my-app
+            port:
+              number: 80

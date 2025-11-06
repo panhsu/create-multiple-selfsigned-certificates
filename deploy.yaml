@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: app
+        image: my_app_image
+        volumeMounts:
+        - name: tls
+          mountPath: /etc/tls
+          readOnly: true
+        - name: ca
+          mountPath: /etc/ca
+          readOnly: true
+      volumes:
+      - name: tls
+        secret:
+          secretName: server-tls
+      - name: ca
+        secret:
+          secretName: server-ca
